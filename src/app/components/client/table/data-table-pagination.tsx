@@ -1,17 +1,31 @@
 'use client'
 
-import { ChevronLeftIcon, ChevronRightIcon, DoubleArrowLeftIcon, DoubleArrowRightIcon } from '@radix-ui/react-icons'
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  DoubleArrowLeftIcon,
+  DoubleArrowRightIcon
+} from '@radix-ui/react-icons'
 import type { Table } from '@tanstack/react-table'
 
-import { Button } from '@ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@ui/select'
 import { generateReport } from '@actions/ai'
+import { Button } from '@ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@ui/select'
+import { ToastAction } from '@ui/toast'
+import { useToast } from '@ui/use-toast'
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>
 }
 
 export function DataTablePagination<TData> ({ table }: DataTablePaginationProps<TData>): JSX.Element {
+  const { toast } = useToast()
   return (
     <div className='flex items-center justify-between px-2'>
       <div className='flex-1 text-sm text-muted-foreground'>
@@ -19,22 +33,62 @@ export function DataTablePagination<TData> ({ table }: DataTablePaginationProps<
         {table.getFilteredRowModel().rows.length} row(s) selected.
       </div>
       <div className='flex items-center space-x-6 lg:space-x-8'>
-        <Button size='sm' onClick={async () => {
-          if (table.getFilteredSelectedRowModel().rows.length === 0) {
-            return
-          }
-          await generateReport({ prompt: JSON.stringify(table.getFilteredSelectedRowModel().rows.map((row) => row.original), null, 2) }).then(async (report) => {
-            await navigator.clipboard.writeText(report)
-          })
-        }}>
+        <Button
+          size='sm'
+          onClick={async () => {
+            if (table.getFilteredSelectedRowModel().rows.length === 0) {
+              return
+            }
+            await generateReport({
+              prompt: JSON.stringify(
+                table
+                  .getFilteredSelectedRowModel()
+                  .rows.map((row) => row.original),
+                null,
+                2
+              )
+            }).then(async (report) => {
+              await navigator.clipboard.writeText(report)
+              toast({
+                title: 'Report copied to clipboard',
+                description:
+                  'your daily report has been copied to your clipboard.',
+                action: <ToastAction altText='Open teams' onClick={() => {
+                  window.open('msteams://teams.microsoft.com/_', '_blank')
+                }}>
+                  Send
+                </ToastAction>
+              })
+            })
+          }}
+        >
           Report selected rows
         </Button>
-        <Button size='sm' onClick={async () => {
-          await generateReport({ prompt: JSON.stringify(table.getFilteredRowModel().rows.map((row) => row.original), null, 2) }).then(async (report) => {
-            await navigator.clipboard.writeText(report)
-          })
-        }}>
-           report
+        <Button
+          size='sm'
+          onClick={async () => {
+            await generateReport({
+              prompt: JSON.stringify(
+                table.getFilteredRowModel().rows.map((row) => row.original),
+                null,
+                2
+              )
+            }).then(async (report) => {
+              await navigator.clipboard.writeText(report)
+              toast({
+                title: 'Report copied to clipboard',
+                description:
+                  'your daily report has been copied to your clipboard.',
+                action: <ToastAction altText='Open teams' onClick={() => {
+                  window.open('msteams://teams.microsoft.com/_', '_blank')
+                }}>
+                  Send
+                </ToastAction>
+              })
+            })
+          }}
+        >
+          report
         </Button>
         <div className='flex items-center space-x-2'>
           <p className='text-sm font-medium'>Rows per page</p>
@@ -64,7 +118,9 @@ export function DataTablePagination<TData> ({ table }: DataTablePaginationProps<
           <Button
             variant='outline'
             className='hidden h-8 w-8 p-0 lg:flex'
-            onClick={() => { table.setPageIndex(0) }}
+            onClick={() => {
+              table.setPageIndex(0)
+            }}
             disabled={!table.getCanPreviousPage()}
           >
             <span className='sr-only'>Go to first page</span>
@@ -73,7 +129,9 @@ export function DataTablePagination<TData> ({ table }: DataTablePaginationProps<
           <Button
             variant='outline'
             className='h-8 w-8 p-0'
-            onClick={() => { table.previousPage() }}
+            onClick={() => {
+              table.previousPage()
+            }}
             disabled={!table.getCanPreviousPage()}
           >
             <span className='sr-only'>Go to previous page</span>
@@ -82,7 +140,9 @@ export function DataTablePagination<TData> ({ table }: DataTablePaginationProps<
           <Button
             variant='outline'
             className='h-8 w-8 p-0'
-            onClick={() => { table.nextPage() }}
+            onClick={() => {
+              table.nextPage()
+            }}
             disabled={!table.getCanNextPage()}
           >
             <span className='sr-only'>Go to next page</span>
@@ -91,7 +151,9 @@ export function DataTablePagination<TData> ({ table }: DataTablePaginationProps<
           <Button
             variant='outline'
             className='hidden h-8 w-8 p-0 lg:flex'
-            onClick={() => { table.setPageIndex(table.getPageCount() - 1) }}
+            onClick={() => {
+              table.setPageIndex(table.getPageCount() - 1)
+            }}
             disabled={!table.getCanNextPage()}
           >
             <span className='sr-only'>Go to last page</span>

@@ -10,7 +10,7 @@ import { Textarea } from '@ui/textarea'
 import { useEffect, useState } from 'react'
 import { ZodError, type z } from 'zod'
 import { addTask, updateTask, getTask } from '@actions/task'
-
+import { useToast } from '@ui/use-toast'
 interface TaskFormProps {
   id?: string
 }
@@ -37,6 +37,7 @@ const initialValues: TaskType = {
 export const TaskForm: React.FC<TaskFormProps> = ({ id }) => {
   const [task, setTask] = useState<TaskType>(initialValues)
   const [open, setOpen] = useState(false)
+  const { toast } = useToast()
 
   const [error, setError] = useState<ErrorType>({
     message: '',
@@ -220,6 +221,17 @@ export const TaskForm: React.FC<TaskFormProps> = ({ id }) => {
               try {
                 TaskTypeSchema.parse(task)
                 id ? await updateTask({ task, id }) : await addTask({ task })
+                if (id) {
+                  toast({
+                    title: 'Task updated',
+                    description: 'Your task has been updated.'
+                  })
+                } else {
+                  toast({
+                    title: 'Task added',
+                    description: 'Your task has been added.'
+                  })
+                }
               } catch (error) {
                 if (error instanceof ZodError) {
                   const { issues } = error

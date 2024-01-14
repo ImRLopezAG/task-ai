@@ -1,6 +1,7 @@
 import { ThemeProvider, TRPCProvider, SessionProvider } from '@app/providers'
 import { cookies } from 'next/headers'
 import { getServerAuthSession } from '@server/auth'
+import { Toaster } from '@ui/toaster'
 
 export const Wrapper: React.FC<Props> = async ({ children }) => {
   const session = await getServerAuthSession()
@@ -14,6 +15,7 @@ export const Wrapper: React.FC<Props> = async ({ children }) => {
           disableTransitionOnChange
         >
           {children}
+          <Toaster />
         </ThemeProvider>
       </TRPCProvider>
     </SessionProvider>
