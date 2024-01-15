@@ -15,9 +15,7 @@ interface DataTableToolbarProps<TData> {
   table: Table<TData>
 }
 
-export function DataTableToolbar<TData>({
-  table
-}: DataTableToolbarProps<TData>): JSX.Element {
+export function DataTableToolbar<TData> ({ table }: DataTableToolbarProps<TData>): JSX.Element {
   const isFiltered = table.getState().columnFilters.length > 0
 
   return (
