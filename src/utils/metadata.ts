@@ -9,6 +9,9 @@ interface ITab {
 export const getMetadata = ({ tab = 'Home' }: ITab): Metadata => {
   return {
     title: `Tasks | ${tab}`,
+    icons: [
+      '/favicon.ico'
+    ],
     description:
       'This is an app to save your tasks and manage them in a better way in the office',
     authors: [
