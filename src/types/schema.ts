@@ -25,7 +25,14 @@ export const TaskTypeSchema = z
   .object({
     id: z.string(),
     title: z.string().min(3).max(50),
-    description: z.string(),
+    description: z.coerce
+      .string()
+      .trim()
+      .toUpperCase()
+      .transform((val) => {
+        if (val === '') return '---'
+        else return val
+      }),
     status: StatusSchema,
     label: LabelSchema,
     priority: PrioritySchema,
