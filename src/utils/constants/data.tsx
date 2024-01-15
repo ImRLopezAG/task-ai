@@ -52,6 +52,11 @@ export const labels: Label[] = [
     value: 'internal',
     label: 'Internal',
     color: 'warning'
+  },
+  {
+    value: 'session',
+    label: 'Session',
+    color: 'info'
   }
 ]
 

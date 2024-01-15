@@ -7,7 +7,8 @@ export const LabelSchema = z.enum([
   'development',
   'lifting',
   'internal',
-  'personal'
+  'personal',
+  'session'
 ])
 export const PrioritySchema = z.enum(['high', 'low', 'medium'])
 
