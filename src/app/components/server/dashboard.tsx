@@ -3,7 +3,6 @@ import { DataTable } from '@client/table/data-table'
 import { UserNav } from '@client/user-nav'
 import { getTasks } from '@actions/task'
 import { getServerAuthSession } from '@server/auth'
-import { api } from '@/lib/trpc'
 
 export const App = async (): Promise<JSX.Element> => {
   const tasks = await getTasks()
