@@ -3,12 +3,12 @@ import { DataTable } from '@client/table/data-table'
 import { UserNav } from '@client/user-nav'
 import { getTasks } from '@actions/task'
 import { getServerAuthSession } from '@server/auth'
+import { api } from '@/lib/trpc'
 
 export const App = async (): Promise<JSX.Element> => {
   const tasks = await getTasks()
   const session = await getServerAuthSession()
-  console.log({ session })
-  console.log({ tasks })
+
   return (
     <div className='hidden h-full flex-1 flex-col space-y-8 p-8 md:flex'>
       <div className='flex items-center justify-between space-y-2'>

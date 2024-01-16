@@ -6,7 +6,7 @@ import {
   type Session
 } from 'next-auth'
 import AtlassianProvider from 'next-auth/providers/atlassian'
-
+import { eq } from 'drizzle-orm'
 import { env } from '@utils/env'
 import { db } from '@server/db'
 import { myPgTable } from '@server/db/schema'
@@ -21,6 +21,7 @@ declare module 'next-auth' {
   interface Session extends DefaultSession {
     user: {
       id: string
+      account: string
       // ...other properties
       // role: UserRole;
     } & DefaultSession['user']
@@ -34,13 +35,19 @@ declare module 'next-auth' {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id
+    session: async ({ session, user }) => {
+      const account = await db.query.accounts.findFirst({
+        where: (a) => eq(a.userId, user.id)
+      })
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: user.id,
+          account: account?.providerAccountId
+        }
       }
-    })
+    }
   },
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
@@ -51,8 +58,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: env.ATLASSIAN_CLIENT_SECRET,
       authorization: {
         params: {
-          scope:
-            'write:jira-work read:jira-work read:jira-user offline_access read:me'
+          scope: 'read:jira-work read:jira-user offline_access read:me'
         }
       }
     })
@@ -69,4 +75,5 @@ export const authOptions: NextAuthOptions = {
  *
  * @see https://next-auth.js.org/configuration/nextjs
  */
-export const getServerAuthSession = async (): Promise<Session | null> => await getServerSession(authOptions)
+export const getServerAuthSession = async (): Promise<Session | null> =>
+  await getServerSession(authOptions)
