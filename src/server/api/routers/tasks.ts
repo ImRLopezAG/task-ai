@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { eq } from 'drizzle-orm'
+import { eq, desc } from 'drizzle-orm'
 import {
   createTRPCRouter,
   protectedProcedure
@@ -34,6 +34,7 @@ export const tasksRouter = createTRPCRouter({
         .select()
         .from(tasks)
         .where(eq(tasks.userId, ctx.session.user.id))
+        .orderBy(desc(tasks.createdAt))
 
       return result
     }),
