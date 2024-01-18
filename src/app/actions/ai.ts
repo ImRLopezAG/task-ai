@@ -39,4 +39,11 @@ export const generateReport = async ({
   \n\n${prompt}`
   })
   return response
+    .replace(/(?:__|[*#])+/g, '')
+    .replace(/#+\s/g, '')
+    .replace(/(\*{1,2}|_{1,2})(.*?)\1/g, '$2')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1 ($2)')
+    .replace(/!\[([^\]]+)\]\(([^)]+)\)/g, '')
+    .replace(/`([^`]+)`/g, '$1')
+    .trim()
 }
